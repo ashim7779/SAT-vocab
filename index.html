@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SAT Word Roots & Affixes Master Suite</title>
+  <style>
+    :root {
+      --bg-main: #0f172a;
+      --bg-card: #1e293b;
+      --border-color: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --correct: #16a34a;
+      --correct-glow: rgba(22, 163, 74, 0.4);
+      --wrong: #dc2626;
+      --wrong-glow: rgba(220, 38, 38, 0.4);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background: var(--bg-main);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1rem;
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 720px;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .nav-tabs {
+      display: flex;
+      gap: 0.5rem;
+      background: var(--bg-card);
+      padding: 0.4rem;
+      border-radius: 1rem;
+      border: 1px solid var(--border-color);
+      overflow-x: auto;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.65rem 0.85rem;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-weight: 700;
+      font-size: 0.85rem;
+      border-radius: 0.75rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.4rem;
+    }
+
+    .tab-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    }
+    .controls-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-card);
+      padding: 0.65rem 1rem;
+      border-radius: 0.85rem;
+      border: 1px solid var(--border-color);
+    }
+
+    .select-input, .search-input {
+      background: #0f172a;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      padding: 0.5rem 0.75rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      outline: none;
+      max-width: 100%;
+    }
+
+    .stat-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      background: #0f172a;
+      padding: 0.3rem 0.7rem;
+      border-radius: 2rem;
+      border: 1px solid var(--border-color);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+    .mode-view {
+      display: none;
+      width: 100%;
+    }
+
+    .mode-view.active {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .quiz-card {
+      background: var(--bg-card);
+      border-radius: 1rem;
+      padding: 1.25rem 1.5rem;
+      border: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      gap: 0.85rem;
+      position: relative;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .type-badge {
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      padding: 0.25rem 0.65rem;
+      border-radius: 1rem;
+      background: #312e81;
+      color: #a5b4fc;
+    }
+
+    .progress-badge {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      color: #a5b4fc;
+      font-weight: 800;
+      font-size: 0.85rem;
+      padding: 0.25rem 0.75rem;
+      border-radius: 1rem;
+    }
+
+    .quiz-term {
+      font-size: 2rem;
+      font-weight: 800;
+      color: #ffffff;
+      text-align: center;
+      margin: 0.2rem 0;
+    }
+
+    .quiz-card.shake {
+      animation: shake 0.4s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+
+    .options-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 0.5rem;
+    }
+
+    .option-btn {
+      background: #0f172a;
+      color: var(--text-main);
+      border: 2px solid var(--border-color);
+      padding: 0.65rem 1rem;
+      border-radius: 0.75rem;
+      font-size: 0.92rem;
+      font-weight: 600;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: #1e1b4b;
+    }
+
+    .option-btn.wrong-choice {
+      background: var(--wrong) !important;
+      border-color: var(--wrong) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 12px var(--wrong-glow);
+    }
+
+    .option-btn.correct-choice {
+      background: var(--correct) !important;
+      border-color: var(--correct) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 12px var(--correct-glow);
+    }
+
+    .explanation-box {
+      display: none;
+      background: #0f172a;
+      border-left: 4px solid var(--accent);
+      padding: 0.6rem 0.85rem;
+      border-radius: 0.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+    }
+
+    .btn {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 0.65rem 1.25rem;
+      border-radius: 0.75rem;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      width: 100%;
+    }
+
+    .btn:hover { background: var(--accent-hover); }
+    .btn-secondary { background: #334155; width: auto; }
+    .btn-secondary:hover { background: #475569; }
+    .btn-action { background: #059669; width: auto; }
+    .btn-action:hover { background: #047857; }
+
+    /* Completion Interface */
+    .completion-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      text-align: center;
+      padding: 1rem 0;
+    }
+
+    .completion-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #a5b4fc;
+    }
+
+    .completion-stats {
+      font-size: 1rem;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .completion-actions {
+      display: flex;
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    /* Flashcard Styles */
+    .flashcard-wrapper {
+      perspective: 1000px;
+      height: 300px;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .flashcard {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .flashcard.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.3);
+    }
+
+    .card-back {
+      transform: rotateY(180deg);
+      border-color: var(--accent);
+    }
+
+    .card-term {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-meaning {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #a5b4fc;
+      margin-bottom: 0.8rem;
+    }
+
+    .card-examples {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .card-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .session-bar {
+      background: var(--bg-card);
+      border: 1px dashed var(--accent);
+      padding: 0.75rem 1rem;
+      border-radius: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .match-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+    }
+
+    .match-tile {
+      background: var(--bg-card);
+      border: 2px solid var(--border-color);
+      padding: 1rem;
+      border-radius: 0.75rem;
+      font-weight: 700;
+      font-size: 0.9rem;
+      text-align: center;
+      cursor: pointer;
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+    }
+
+    .match-tile.selected {
+      border-color: var(--accent);
+      background: #312e81;
+    }
+
+    .match-tile.matched {
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .match-tile.incorrect {
+      background: var(--wrong);
+      border-color: var(--wrong);
+    }
+
+    /* List View Styles */
+    .search-bar-container { width: 100%; }
+    .study-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      max-height: 480px;
+      overflow-y: auto;
+      padding-right: 0.3rem;
+    }
+
+    .list-item {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 0.85rem 1rem;
+      border-radius: 0.75rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .list-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .list-term { font-size: 1.1rem; font-weight: 800; color: #ffffff; }
+    .list-meaning { font-size: 0.95rem; font-weight: 600; color: #a5b4fc; }
+    .list-examples { font-size: 0.8rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+<div class="app-container">
+  <!-- Navigation Modes -->
+  <nav class="nav-tabs">
+    <button class="tab-btn active" onclick="switchMode('flashcards')">🃏 Flashcards</button>
+    <button class="tab-btn" onclick="switchMode('quiz')">🎯 Practice Quiz</button>
+    <button class="tab-btn" onclick="switchMode('match')">🧩 Match Game</button>
+    <button class="tab-btn" onclick="switchMode('list')">📖 Word Bank</button>
+  </nav>
+
+  <!-- Section Dropdown Selector -->
+  <div class="controls-bar">
+    <select id="section-select" class="select-input" onchange="applyFilter()">
+      <option value="All">All Terms (All 218 Items)</option>
+
+      <optgroup label="Prefixes (62 Terms)">
+        <option value="Prefix - All">Prefix - All (62 Terms)</option>
+        <option value="Prefix (Pt 1)">Prefix (Pt 1)</option>
+        <option value="Prefix (Pt 2)">Prefix (Pt 2)</option>
+        <option value="Prefix (Pt 3)">Prefix (Pt 3)</option>
+        <option value="Prefix (Pt 4)">Prefix (Pt 4)</option>
+      </optgroup>
+
+      <optgroup label="Roots (131 Terms)">
+        <option value="Root - All">Root - All (131 Terms)</option>
+        <option value="Root (Pt 1)">Root (Pt 1)</option>
+        <option value="Root (Pt 2)">Root (Pt 2)</option>
+        <option value="Root (Pt 3)">Root (Pt 3)</option>
+        <option value="Root (Pt 4)">Root (Pt 4)</option>
+        <option value="Root (Pt 5)">Root (Pt 5)</option>
+      </optgroup>
+
+      <optgroup label="Suffixes (25 Terms)">
+        <option value="Suffix - All">Suffix - All (25 Terms)</option>
+        <option value="Suffix (Pt 1)">Suffix (Pt 1)</option>
+        <option value="Suffix (Pt 2)">Suffix (Pt 2)</option>
+        <option value="Suffix (Pt 3)">Suffix (Pt 3)</option>
+        <option value="Suffix (Pt 4)">Suffix (Pt 4)</option>
+      </optgroup>
+    </select>
+
+    <div id="stats-container"></div>
+  </div>
+
+  <!-- MODE 1: Flashcards -->
+  <div id="flashcards-view" class="mode-view active">
+    <div class="flashcard-wrapper" onclick="flipCard()">
+      <div id="flashcard" class="flashcard">
+        <div class="card-face card-front">
+          <span id="fc-type" class="type-badge" style="position:absolute; top:1.25rem; left:1.25rem;">ROOT</span>
+          <div id="fc-term" class="card-term">--</div>
+          <p style="color: var(--text-muted); font-size: 0.8rem;">Click or press Space to flip</p>
+        </div>
+        <div class="card-face card-back">
+          <div id="fc-meaning" class="card-meaning">--</div>
+          <div id="fc-examples" class="card-examples">--</div>
+        </div>
+      </div>
+    </div>
+    <div class="card-controls">
+      <button class="btn btn-secondary" onclick="prevCard()">← Prev</button>
+      <span id="fc-counter" style="font-weight: 700; color: var(--text-muted);">1 / 218</span>
+      <button class="btn btn-secondary" onclick="shuffleCards()">🔀 Shuffle</button>
+      <button class="btn btn-secondary" onclick="nextCard()">Next →</button>
+    </div>
+  </div>
+
+  <!-- MODE 2: Quiz -->
+  <div id="quiz-view" class="mode-view">
+    <div id="quiz-card" class="quiz-card">
+      <!-- Active Question Content -->
+      <div id="qz-main-content">
+        <div class="quiz-header">
+          <span id="qz-type" class="type-badge">PREFIX</span>
+          <span id="qz-progress-counter" class="progress-badge">0 / 0</span>
+        </div>
+
+        <div id="qz-term" class="quiz-term">--</div>
+
+        <div id="qz-options" class="options-grid"></div>
+
+        <div id="qz-explanation" class="explanation-box">
+          <strong>Examples:</strong> <span id="qz-examples-text">--</span>
+        </div>
+
+        <button id="qz-next-btn" class="btn" style="display:none; margin-top:0.75rem;" onclick="loadNextQuestion()">Next Question →</button>
+      </div>
+
+      <!-- Completion Screen -->
+      <div id="qz-completion-screen" class="completion-container" style="display:none;">
+        <h2 class="completion-title">🎉 Section Completed!</h2>
+        <p id="qz-completion-stats" class="completion-stats">You have completed all questions in this section.</p>
+        <div class="completion-actions">
+          <button class="btn" onclick="restartCurrentQuiz()">🔄 Re-practice Section</button>
+          <button class="btn btn-secondary" style="flex:1;" onclick="goHomeQuiz()">🏠 Go Back to Home</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Practice Session Bar -->
+    <div class="session-bar">
+      <div>
+        <strong style="font-size:0.85rem;">Session Progress:</strong>
+        <p id="session-count-text" style="font-size:0.8rem; color:var(--text-muted);">0 items practiced in this run</p>
+      </div>
+      <button class="btn btn-action" onclick="practiceSessionFlashcards()">🃏 Practice Session Flashcards</button>
+    </div>
+  </div>
+
+  <!-- MODE 3: Match Game -->
+  <div id="match-view" class="mode-view">
+    <div style="display:flex; justify-style:space-between; align-items:center;">
+      <span style="font-weight:700; color:var(--text-muted); font-size:0.9rem;">Match terms to their meanings!</span>
+      <button class="btn btn-secondary" onclick="startMatchGame()">🔄 Restart</button>
+    </div>
+    <div id="match-grid" class="match-grid"></div>
+  </div>
+
+  <!-- MODE 4: Study List -->
+  <div id="list-view" class="mode-view">
+    <div class="search-bar-container">
+      <input type="text" id="search-input" class="search-input" placeholder="Search prefix, root, suffix, or definition..." oninput="renderStudyList()">
+    </div>
+    <div id="study-list" class="study-list"></div>
+  </div>
+</div>
+
+<script>
+  // Complete Combined Master Dataset (PDF + HTML Code, Deduplicated)
+  const masterData = [
+    // --- PREFIXES (62 items) ---
+    { term: "a- / an-", type: "Prefix", meaning: "Without, not", examples: "abyss: deep chasm without a bottom, achromatic: without color, agnostic: without knowledge of God, amorphous: without shape, anarchy: without order, anemia: lack of red blood cells, anomaly: something not normal, anonymous: without identification, apathy: lack of concern, atypical: not typical" },
+    { term: "ab- / abs-", type: "Prefix", meaning: "Away from, off", examples: "abdicate: to give up, abduct: to take away, abjure: to give up, abnormal: not normal, abolish: to do away with, abscond: to take away, absent-minded: forgetful, absentee: one who is not present, abstemious: sparingly consumed, abstruse: difficult to understand" },
+    { term: "ad- / ac- / af- / ag-", type: "Prefix", meaning: "To, toward, near", examples: "Adhere, acquiesce, affiliate, aggrandize" },
+    { term: "ambi- / amphi-", type: "Prefix", meaning: "Both, around", examples: "Ambiguous, ambivalent, amphitheater, ambidextrous" },
+    { term: "ana-", type: "Prefix", meaning: "Back", examples: "Anachronism, anabasis" },
+    { term: "ante-", type: "Prefix", meaning: "Before, in front", examples: "Antecedent, antediluvian, anterior" },
+    { term: "anti- / ant-", type: "Prefix", meaning: "Against, opposed to", examples: "antiallergic: preventing allergy, antiatom: atom composed of antiparticles, Antichrist: enemy of Christ, antidepressant: drug that alleviates depression symptoms, antiestablishment: marked by opposition to conventional values, antifeminist: marked by disbelief in the equality of the sexes, antifreeze: substance that prevents freezing, antigravity: hypothetical effect of eliminating gravity, antihero: protagonist lacking courage, idealism, antinuclear: opposed to nuclear power" },
+    { term: "auto-", type: "Prefix", meaning: "Self", examples: "autobiography: one's life story, autocrat: despot, autofocus: camera that focuses automatically, autograph: signature written by one's own hand, automated: self-operating, automatic: self-operating, automobile: self-propelled vehicle, autonomic: functioning involuntarily, autonomous: self-governing, autonomy: home rule" },
+    { term: "bi- / di-", type: "Prefix", meaning: "Two, split, twice", examples: "biannual: occurring twice a year, biconvex: convex on both sides, bicycle: vehicle with two wheels, bidirectional: having two directions, bifacial: having two faces, bigamy: state of having two wives, bilocation: ability to be in two locations at once, binary: consisting of two parts, binomial: algebraic expression containing two terms, bipartisan: supported by members of two parties" },
+    { term: "cata-", type: "Prefix", meaning: "Intensive, according to", examples: "Cataclysm, catastrophic, catalog" },
+    { term: "circum-", type: "Prefix", meaning: "Around", examples: "Circumlocution, circumscribe, circumvent, circumference" },
+    { term: "co- / com- / con- / sym- / syn-", type: "Prefix", meaning: "With, together, joint", examples: "Synthesis, concur, symbiosis, compliant, coalesce, collaborate" },
+    { term: "contra- / counter-", type: "Prefix", meaning: "Against, opposite, opposing", examples: "Contradict, counterintuitive, contravene, countermand, contraband" },
+    { term: "de-", type: "Prefix", meaning: "Down, away, undo", examples: "Deplore, delineate, debase, deride" },
+    { term: "demi-", type: "Prefix", meaning: "Partly", examples: "demigod: deified mortal, demilune: half-moon; crescent shape, demimonde: women of lesser social standing, demisemiquaver: thirty-second note (music), demitasse: small cup of black coffee" },
+    { term: "dia-", type: "Prefix", meaning: "Across, through", examples: "Dialogue, diameter, diagnosis" },
+    { term: "dis- / dif-", type: "Prefix", meaning: "Apart, not, away", examples: "disability: handicap, disappear: to vanish, disbelieve: to doubt, discolor: to soil; to stain, disconnect: to separate, disorder: chaos, displeasure: vexation, dissimilar: different, distrust: to have misgivings, disunity: lack of unity" },
+    { term: "dys- / mal-", type: "Prefix", meaning: "Bad, ill, wrong", examples: "dysfunctional: not functioning properly, dysgenesis: abnormal development of an organ, dysgraphia: pathological inability to write, dyslexic: unable to read properly, dyspepsia: indigestion, dysphemism: offensive term, dysphonia: vocal function disturbance, dyspnea: difficulty in breathing, dystopia: imaginary dreadful place, dystrophy: disorder from inadequate tissue nutrition" },
+    { term: "ecto-", type: "Prefix", meaning: "Outside; external", examples: "ectopic: occurring in an unusual manner, ectomy: surgical removal, ectoderm: outer layer of embryo, ectogenous: living outside host, ectoparasite: external parasite, ectoplasm: outer portion of cytoplasm, ectotherm: cold-blooded animal" },
+    { term: "endo-", type: "Prefix", meaning: "Within; inside", examples: "endobiotic: living within host, endocardium: membrane lining heart, endocrine: glands secreting into blood, endoenzyme: retained enzyme, endogenous: originating within organism, endometrium: inner lining of uterus, endoscope: body inspection tool, endotherm: warm-blooded animal, endotoxin: toxin released inside host" },
+    { term: "equi-", type: "Prefix", meaning: "Equal", examples: "Equanimity, equivocal, equity, equilibrium" },
+    { term: "eu- / bene-", type: "Prefix", meaning: "Good, well", examples: "Beneficent, eulogy, euphoria, benevolent, euphemism" },
+    { term: "ex- / e- / ec-", type: "Prefix", meaning: "Out, away from, former", examples: "Exculpate, elicit, eccentric, exonerate, extract" },
+    { term: "extra- / extro-", type: "Prefix", meaning: "Beyond, outside", examples: "extracellular: outside cell, extracurricular: outside curriculum, extramarital: outside marriage, extraneous: not necessary, extraordinary: beyond normal, extrapolate: project beyond, extrasensory: beyond five senses, extraterrestrial: beyond earth, extravagant: beyond reasonable limits, extravert: person interested in others" },
+    { term: "fore-", type: "Prefix", meaning: "In front of, previous", examples: "Before, therefore, forebode, forecast" },
+    { term: "hetero-", type: "Prefix", meaning: "Different", examples: "heterochromatic: varicolored, heterocycle: cyclic compound with multiple atom types, heterodoxy: opinion not conforming to beliefs, heterogeneous: mixture of different elements, heterologous: unlike evolutionary origin, heteronyms: same-spelled words with different meaning, heterosexual: attracted to opposite sex, heterosis: increase in vigor, heterotroph: requiring organic compounds" },
+    { term: "homo- / homeo-", type: "Prefix", meaning: "Same, uniform, alike", examples: "homeostasis: maintaining equilibrium, homocentric: common center, homogeneous: uniform, homogenize: make uniform, homologous: corresponding, homonym: word designating several things, homophile: concerned with gay rights, homophobia: aversion to homosexuals, homophones: same sound different spelling" },
+    { term: "hyper-", type: "Prefix", meaning: "Excessive, over, beyond", examples: "hyperactive: extremely active, hyperbole: exaggerated figure of speech, hypercalcemia: excessive calcium in blood, hypercritical: excessively critical, hyperopia: farsightedness, hypersensitive: excessively sensitive, hyperspace: four-dimensional space, hypertension: high blood pressure, hyperthermia: high body temperature, hyperventilate: breathe too fast" },
+    { term: "hypo-", type: "Prefix", meaning: "Under, deficient, less", examples: "hypocenter: ground zero, hypodermal: beneath epidermis, hypodermic: beneath skin, hypoesthesia: loss of sensation, hypoglycemia: low blood sugar, hypoplasia: deficiency of cells, hypotension: lowered blood pressure, hypothermia: lowered body temperature, hypothesis: taken to be true, hypoxia: decrease in oxygen" },
+    { term: "im-", type: "Prefix", meaning: "Without", examples: "immaterial: irrelevant, immature: juvenile, immedicable: incurable, immiscible: not capable of being mixed, immobile: motionless, immortal: everlasting, impartial: not partial, impassable: not allowing passage, impatient: without patience, impoverished: without money" },
+    { term: "in- / im- / il- / ir-", type: "Prefix", meaning: "Not, opposite, without", examples: "inability: incapacity, inaction: lack of action, inactive: dormant, inanimate: lifeless, innocuous: harmless, insincere: artificial; deceitful, intangible: abstract; vague, invalid: erroneous, invisible: concealed, invulnerable: immune to attack" },
+    { term: "in- / im- (Spatial)", type: "Prefix", meaning: "In, into, inside", examples: "Implicit, incisive, innate, inculcate" },
+    { term: "infra-", type: "Prefix", meaning: "Beneath", examples: "infraclass: rank between subclass and order, infrahuman: subhuman, infrared: longer wavelength than red, infrasonic: sound waves below audible, infrasound: sound inaudible to humans, infrastructure: structure beneath surface" },
+    { term: "inter-", type: "Prefix", meaning: "Between, among", examples: "interbreed: crossbreed, intercellular: situated between cells, intercity: going between two cities, intercoastal: situated between seacoasts, intercollegiate: representing colleges, intercontinental: involving continents, interdepartmental: involving departments, interdisciplinary: multiple fields, interfaith: persons of more than one faith, interlink: link together" },
+    { term: "intra- / intro-", type: "Prefix", meaning: "Within, inside", examples: "intracellular: occurring within cell, intracranial: situated within skull, intradermal: between layers of skin, intragalactic: within single galaxy, intramolecular: existing within molecule, intramuscular: located within muscle, intraocular: located within eye, intrapsychic: occurring within mind, intrastate: within state, intravenous: within vein" },
+    { term: "iso-", type: "Prefix", meaning: "Equal, same", examples: "anisogamy: union of dissimilar gametes, anisotropic: unequal response, isochronous: equal in time, isodynamic: same force, isogon: equiangular polygon, isomer: chemicals with same formula, isomorphic: same form, isosceles: triangle with equal sides, isothermal: constant temperature, isotonic: equal tension" },
+    { term: "kilo-", type: "Prefix", meaning: "Thousand", examples: "kiloampere: 1,000 amperes, kilobyte: 1,000 bytes, kilocalorie: 1,000 calories, kilogram: 1,000 grams, kiloliter: 1,000 liters, kilometer: 1,000 meters, kilosecond: 1,000 seconds, kiloton: 1,000 tons, kilovolt: 1,000 volts, kilowatt: 1,000 watts" },
+    { term: "macro-", type: "Prefix", meaning: "Large, long, great", examples: "Macrocosm, macrobiotic, macroeconomics" },
+    { term: "meta-", type: "Prefix", meaning: "Change, beyond, after", examples: "Metaphysics, metamorphosis, metastasis" },
+    { term: "micro-", type: "Prefix", meaning: "Small", examples: "Microcosm, microscopic, microscope" },
+    { term: "min-", type: "Prefix", meaning: "Small", examples: "Minimum, miniature, miniscule" },
+    { term: "mis-", type: "Prefix", meaning: "Wrong, bad, hatred", examples: "Misnomer, misanthrope, misapprehension, mistake" },
+    { term: "mono- / uni-", type: "Prefix", meaning: "One, single", examples: "monochromatic: single color, monoculture: single crop land-use, monocyclic: one cycle, monodrama: piece for one performer, monograph: account on single subject, monometallic: single metal, monomorphic: same shape throughout life, monopode: creature with one foot, monotone: unvarying pitch, monoxide: single oxygen atom" },
+    { term: "multi- / poly-", type: "Prefix", meaning: "Many, multiple", examples: "multicolored: many colors, multicultural: many cultures, multifaceted: many facets, multifamily: several families, multifunction: several functions, multilevel: many levels, multilingual: several languages, multiracial: many races, multivitamin: several vitamins" },
+    { term: "nano / micro / milli / centi / deci / deka / hecto / kilo / mega / giga", type: "Prefix", meaning: "Science; mathematics (metric / measurement prefixes)", examples: "centimeter: one hundredth of a meter, decigram: one tenth of a gram, dekaohm: ten ohms, gigabyte: one billion bytes, hectometer: hundred meters, kilocalorie: thousand calories, megahertz: million hertz, microvolt: millionth of volt, millisecond: thousandth of second, nanowatt: billionth of watt" },
+    { term: "neo-", type: "Prefix", meaning: "New", examples: "Neophyte, neonatal, neologistic" },
+    { term: "non-", type: "Prefix", meaning: "Not, lack of", examples: "nonaggression: abstaining from aggression, nonalcoholic: without alcohol, nonbeliever: skeptic, noncarbonated: without carbonation, nonconformist: individualist, nondisclosure: failure to disclose, nonentity: fictional thing, nonproductive: not productive, nonsense: absurdity, nonviolent: peaceful" },
+    { term: "ob- / op-", type: "Prefix", meaning: "In the way, against", examples: "Object, objection, opposition, obscure" },
+    { term: "omni- / pan-", type: "Prefix", meaning: "All, every", examples: "Omnipotent, omniscient, panacea, pandemic, panorama" },
+    { term: "para-", type: "Prefix", meaning: "Beside, related", examples: "Parallel, parasite, paramedic" },
+    { term: "peri-", type: "Prefix", meaning: "Around, surrounding", examples: "Periphery, periphrastic, peripatetic, perimeter" },
+    { term: "post-", type: "Prefix", meaning: "After, behind", examples: "postgraduate: advanced study after graduation, posthumous: published after writer's death, posthypnotic: after hypnosis, postindustrial: manufacturing has waned, postmortem: after death, postnatal: immediately after birth, postnuptial: period after marriage, postoperative: after surgery, postproduction: editing after filming, posttraumatic: following injury" },
+    { term: "pre-", type: "Prefix", meaning: "Before, in advance", examples: "preannounce: announce in advance, preauthorize: authorize in advance, precancerous: could become cancerous, precaution: measure in advance, precollege: before college, prenatal: before birth, preseason: period before new season, preshrunk: shrunken before first wash, presweetened: sweetened in advance, pretest: exam before instruction" },
+    { term: "pro-", type: "Prefix", meaning: "Forward, before, for", examples: "Prolific, propensity, prognosticate, profligate" },
+    { term: "pseudo-", type: "Prefix", meaning: "False, not genuine", examples: "pseudo: sham, pseudoacademic: false scholar, pseudocyesis: false pregnancy, pseudointellectual: pretending intellectual interest, pseudomorph: irregular form, pseudonym: fictitious name, pseudopodium: false feet, pseudoscience: theories presumed to have scientific basis" },
+    { term: "re-", type: "Prefix", meaning: "Back, again, repeat", examples: "reanimate: resuscitate, reassure: encourage, reconsider: rethink, redirect: change focus, resurface: come to surface again, retrain: teach again, reusable: used more than once, review: look over again, revisit: reconsider, reword: express anew" },
+    { term: "retro-", type: "Prefix", meaning: "Backward, back", examples: "Retrospective, retrograde, retroactive" },
+    { term: "se-", type: "Prefix", meaning: "Apart", examples: "Secede, seclude, serum" },
+    { term: "semi- / hemi-", type: "Prefix", meaning: "Half, partial, partly", examples: "semiannual: every six months, semiaquatic: not entirely aquatic, semiarid: little rainfall, semicircle: half circle, semiliterate: limited ability to read and write, semilunar: half-moon shape, semiprecious: lesser value gem, semiterrestrial: not entirely terrestrial, semitone: tone between major tones, semiweekly: twice weekly" },
+    { term: "sub- / suc- / suf- / sup-", type: "Prefix", meaning: "Under, below, beneath, less than", examples: "subzero: lower than zero, subacute: moderately acute, subaerial: on earth's surface, subaqueous: under water, subcategory: subdivision in category, subclass: division of class, subculture: distinctive traits group, subdivide: divide into parts, substructure: supporting structure, suburban: outside city" },
+    { term: "super- / sur-", type: "Prefix", meaning: "Above, over, beyond, higher", examples: "Superfluous, surfeit, surmount, supercilious" },
+    { term: "tele-", type: "Prefix", meaning: "Far", examples: "Television, telephone, telescope" },
+    { term: "tetr / pent / hex / hept / oct / non / dek", type: "Prefix", meaning: "Science; mathematics (numerical prefixes 4 to 10)", examples: "dekagram: ten grams, heptad: series of seven, hexagon: six-sided polygon, nonagenarian: person in 90s, nonane: nine-carbon chain alkane, octopus: eight-legged sea creature, pentapeptide: five peptide units, pentene: five-carbon chain alkene, tetrahedron: four faces, tetravalent: valence of four" },
+    { term: "trans-", type: "Prefix", meaning: "Across, through, beyond", examples: "transatlantic: crossing Atlantic, transcontinental: across continent, transcultural: across cultures, translocation: change in location, transmarine: traveling across ocean, transmembrane: across membrane, transmigrate: migrate, transmutation: transformation, transplant: plant in new location" },
+    { term: "ultra-", type: "Prefix", meaning: "Beyond, excessive", examples: "ultra: excessive, ultraclean: spotless, ultracritical: hypercritical, ultramodern: latest thing, ultramundane: outside physical existence, ultranationalism: excessive devotion, ultrapurity: without impurities, ultrashort: extremely short, ultrasonic: sound waves not detectable, ultraviolet: shorter wavelengths than visible light" },
+    { term: "un-", type: "Prefix", meaning: "Not, reverse of", examples: "unabashed: bold, unabated: undiminished force, unbelievable: incredible, undesirable: objectionable, unequivocal: not debatable, unfeeling: insensitive, unfeigned: real, unfetter: remove chains, untenable: not defensible, unyielding: stubborn" },
+
+    // --- WORD ROOTS (131 items) ---
+    { term: "ac / acr / acu", type: "Root", meaning: "sharp; bitter", examples: "acerbic: sharp taste, acidic: caustic, acrid: sharp or bitter, acrimony: bitter animosity, acuity: mental sharpness, acumen: sharp intelligence, acuminate: taper sharply, acupuncture: needle therapy, acute: intense, exacerbate: to worsen" },
+    { term: "acro", type: "Root", meaning: "high; extremity", examples: "acronym: word from first letters, acrostic: poem from line ends, acrobat: high wire performer, acrobatics: agility display, acrocephaly: peaked skull, acromegaly: enlarged bones, acrophobia: fear of heights, acropolis: hill fort" },
+    { term: "act / ag", type: "Root", meaning: "Do, act, drive, lead", examples: "accept: receive, activate: make active, active: in motion, actuate: put in motion, agenda: things to do, agent: activator, aggravate: agitate, agility: dexterity, agitate: incite, exacting: demanding, exigent, cogent" },
+    { term: "ad / al", type: "Root", meaning: "toward; near", examples: "add: put together, adjacent: next to, adjoin: abut, adore: cherish, advent: arrival, adventure: journey, alcove: adjacent small room, allegiance: devotion, allure: attraction, ally: unite" },
+    { term: "agog", type: "Root", meaning: "leader", examples: "anagoge: spiritual scripture view, demagogue: leader of people, hypnagogic: sleep drowsiness, mystagogue: mystery initiator, pedagogue: schoolteacher, secretagogue: secretion promoter, sialagogue: saliva stimulator, synagogue: worship house" },
+    { term: "agr / agri / agro", type: "Root", meaning: "field, farming", examples: "agrarian: pertaining to land, agribusiness: large farming, agriculture: crop science, agrobiology: plant growth science, agrochemical: agricultural chemical, agrology: soil study, agronomy: soil management" },
+    { term: "al / alter", type: "Root", meaning: "other; another", examples: "alias: another name, alibi: excuse, alien: another type, allegory: comparison, alliance: agreement, alter ego: other identity, alter: another, altercation: disagreement, alternate: replacement, altruism: love of others" },
+    { term: "alb", type: "Root", meaning: "White", examples: "Albino, albumen, albacore" },
+    { term: "alim", type: "Root", meaning: "to support; to nourish", examples: "aliment: food, alimental: nourishing, alimentary: digestive tract, alimentation: food, alimony: financial support, palimony: financial support" },
+    { term: "am / ama / ami / amo / phil", type: "Root", meaning: "Love, friend, affinity", examples: "amatory: expressive of love, amiable: friendly, amicable: pleasant, amity: friendship, amoretto: cupid, amorist: love writer, amorous: loving, amour: love, enamored: in love, paramour: lover, philanthropic" },
+    { term: "ambul", type: "Root", meaning: "Walk, move", examples: "Amble, ambulance, ambulant" },
+    { term: "anim", type: "Root", meaning: "Mind, spirit, life", examples: "Animosity, equanimity, magnanimous, pusillanimous" },
+    { term: "anthrop", type: "Root", meaning: "Human, mankind", examples: "Misanthrope, philanthropy, anthropomorphic" },
+    { term: "arche / archi", type: "Root", meaning: "Primitive, origin", examples: "Archaic, archaeology, archive" },
+    { term: "auto", type: "Root", meaning: "Self", examples: "Autopilot, autonomous, autocratic" },
+    { term: "belli / bel", type: "Root", meaning: "War, fight", examples: "Belligerent, bellicose, antebellum, rebel" },
+    { term: "cap / capt / cept / cip / ceiv / ceipt", type: "Root", meaning: "Take, hold, seize", examples: "Capacious, inception, captious, receive, intercept, perception" },
+    { term: "cent", type: "Root", meaning: "Hundred", examples: "Centennial, century, percent" },
+    { term: "cerebr", type: "Root", meaning: "Brain", examples: "Cerebral, cerebrate" },
+    { term: "cert", type: "Root", meaning: "Sure", examples: "Certain, ascertain, certify" },
+    { term: "cess / ced / cede", type: "Root", meaning: "Go, yield, move, withdraw", examples: "Concede, precede, incessant, recede, exceed, access, process" },
+    { term: "chron", type: "Root", meaning: "Time", examples: "Anachronism, chronic, chronology, chronicle, synchronize" },
+    { term: "clam / claim", type: "Root", meaning: "Shout, speak", examples: "Exclaim, clamor, proclaim" },
+    { term: "clar", type: "Root", meaning: "Clear", examples: "Clarify, clarification, declare" },
+    { term: "clin / cline", type: "Root", meaning: "Lean", examples: "Inclination, incline, recline" },
+    { term: "clud / clus", type: "Root", meaning: "Close", examples: "Conclusion, seclude, conclude" },
+    { term: "cogn / gno / sci", type: "Root", meaning: "Know, learn", examples: "Cognizant, prognosis, incognito, science" },
+    { term: "corp", type: "Root", meaning: "Body", examples: "Corporeal, corpulent, corpse, corporation" },
+    { term: "cred", type: "Root", meaning: "Believe, trust", examples: "Credulous, incredulous, credence, incredible, credible, credit" },
+    { term: "crypt", type: "Root", meaning: "Hidden, secret", examples: "Cryptic, encrypt" },
+    { term: "culp", type: "Root", meaning: "Blame, fault", examples: "Culpable, exculpate, culprit" },
+    { term: "cumul", type: "Root", meaning: "Mass, heap", examples: "Accumulate, cumulative" },
+    { term: "dem", type: "Root", meaning: "People", examples: "Demagogue, pandemic, demographics, democracy" },
+    { term: "dic / dict", type: "Root", meaning: "Speak, say", examples: "Dictum, contradict, vindictive, interdict, dictate, predict, verdict" },
+    { term: "doc / doct", type: "Root", meaning: "Teach, lead", examples: "Docile, indoctrinate, doctrinaire" },
+    { term: "domin", type: "Root", meaning: "Master", examples: "Dominate, predominate, domineering" },
+    { term: "don", type: "Root", meaning: "Give", examples: "Donate, pardon, donor" },
+    { term: "dorm", type: "Root", meaning: "Sleep", examples: "Dormitory, dormant, dormer" },
+    { term: "duc / duct", type: "Root", meaning: "Lead, guide", examples: "Conducive, induce, deduce, induct, conduct, produce, educate" },
+    { term: "dur", type: "Root", meaning: "Harden, long-lasting", examples: "Durable, duration, endure" },
+    { term: "dyn", type: "Root", meaning: "Power, energy", examples: "Dynamite, dynamic" },
+    { term: "equ", type: "Root", meaning: "Equal, even", examples: "Equanimity, equivocal, inequity, equitable" },
+    { term: "err", type: "Root", meaning: "to wander", examples: "aberrant: deviating from expected, err: make errors, errancy: instance of error, errand: short trip, errant: wandering, errata: errors, erratic: unstable, erroneous: deviating from correct, error: departing from correct" },
+    { term: "esth / aesth", type: "Root", meaning: "Beauty, feeling", examples: "Esthetician, aesthetic, kinesthesia" },
+    { term: "ethn", type: "Root", meaning: "Nation, race", examples: "Ethnicity, ethnology, ethnocentric" },
+    { term: "fac / fect / fic / fec", type: "Root", meaning: "Make, do", examples: "Facilitate, efficacious, beneficent, factory, affect, fiction, efficient" },
+    { term: "fid", type: "Root", meaning: "Faith, trust", examples: "Fidelity, diffident, perfidy, confidant" },
+    { term: "flect / flex", type: "Root", meaning: "Bend", examples: "Reflect, flexible, inflect, deflect" },
+    { term: "flu / flux", type: "Root", meaning: "Flow", examples: "Superfluous, affluent, fluctuate, effluence" },
+    { term: "fusc", type: "Root", meaning: "Dark", examples: "Obfuscation, infuscate, subfuscous" },
+    { term: "gen", type: "Root", meaning: "Birth, creation, race, kind", examples: "carcinogen: cancer chemical, congenital: from birth, engender: give rise to, genealogy: family origin, generation: age group, genesis: birth, genetics: heredity, genre: category, ingenious: inborn talent, progeny: offspring, genial, homogenous" },
+    { term: "ger", type: "Root", meaning: "Old age", examples: "Geriatrics, gerontology" },
+    { term: "grad / gress", type: "Root", meaning: "To step, to go", examples: "Digress, gradual, graduate" },
+    { term: "graph / gram", type: "Root", meaning: "Write, draw", examples: "Epigram, graphic, typography" },
+    { term: "grat", type: "Root", meaning: "Pleasing, thankful", examples: "Gratuitous, gratify, ingratiate" },
+    { term: "gyn", type: "Root", meaning: "Woman", examples: "Gynecology, androgynous, misogyny" },
+    { term: "idio", type: "Root", meaning: "Peculiar, distinct", examples: "Idiotic, idiomatic" },
+    { term: "ject", type: "Root", meaning: "Throw, cast", examples: "Conjecture, abject, jettison, interject" },
+    { term: "jud / jur / jus", type: "Root", meaning: "Law, judge, swear", examples: "Abjure, jurisdiction, judicious, perjury" },
+    { term: "lab", type: "Root", meaning: "Work", examples: "Elaborate, laboratory, laborious, labor" },
+    { term: "lat", type: "Root", meaning: "Broad, wide", examples: "Dilate, latitude" },
+    { term: "laud", type: "Root", meaning: "Praise", examples: "Laudably, applause, applaud" },
+    { term: "lex", type: "Root", meaning: "Word, law", examples: "Lexicology, dyslexic, lexicon" },
+    { term: "log / loqu / loc", type: "Root", meaning: "Word, speech, reason", examples: "Loquacious, eloquent, circumlocution, eulogy" },
+    { term: "luc / lum / lux / lus", type: "Root", meaning: "Light, clear", examples: "elucidate: make clear, illuminate: light up, lackluster: without shine, lucid: clear, Lucifer: light-bearer, luminous: glowing, luster: shine, lustrous: shining, pellucid: transparent, translucent: transmitting light" },
+    { term: "medi", type: "Root", meaning: "Middle", examples: "Mediocre, medium, medieval" },
+    { term: "melan", type: "Root", meaning: "Black, dark", examples: "Melancholy, melanoma, melodrama" },
+    { term: "mem / mne", type: "Root", meaning: "Mind, memory", examples: "Mnemonic, commemorate, reminiscence" },
+    { term: "migr", type: "Root", meaning: "Move", examples: "Immigrant, emigrate, migrant, migration" },
+    { term: "mit / miss", type: "Root", meaning: "Send, let go, cast", examples: "Remiss, intermittent, submissive, dismiss, transmit, mission" },
+    { term: "mor / mort", type: "Root", meaning: "Death", examples: "Moribund, mortify, morbid, immortal" },
+    { term: "nat", type: "Root", meaning: "Born", examples: "Innate, natural, natal" },
+    { term: "neg", type: "Root", meaning: "No", examples: "Negate, negative, renege" },
+    { term: "nomen / nom", type: "Root", meaning: "Name", examples: "Misnomer, nominal, ignominy" },
+    { term: "nov", type: "Root", meaning: "New", examples: "Novice, renovate, novelty" },
+    { term: "null", type: "Root", meaning: "None", examples: "Nullify, nullification, nulliparity" },
+    { term: "opt", type: "Root", meaning: "Best", examples: "Optimal, optimum, optimize" },
+    { term: "oxy", type: "Root", meaning: "Sharp", examples: "Oxymoron, oxidize" },
+    { term: "paleo", type: "Root", meaning: "Ancient", examples: "Paleontologist, Paleolithic, paleography" },
+    { term: "path", type: "Root", meaning: "Feeling, suffering", examples: "Antipathy, apathy, empathy, pathology" },
+    { term: "ped", type: "Root", meaning: "Foot, kid", examples: "Pedestrian, pedometer, pediatrician" },
+    { term: "pel / puls / pul", type: "Root", meaning: "Drive, push, urge", examples: "Compelling, impetus, repulsion, expel, dispel" },
+    { term: "pend / pens", type: "Root", meaning: "Hang, weigh, pay", examples: "Pensive, impending, stipend, compendium" },
+    { term: "phon", type: "Root", meaning: "Sound, voice", examples: "Euphony, cacophony, phonetics" },
+    { term: "plac", type: "Root", meaning: "Please, calm", examples: "Placate, implacable, complacent, placid" },
+    { term: "plic / plex / ply", type: "Root", meaning: "Fold, twist", examples: "Explicit, implicit, duplicity, complicity" },
+    { term: "poli", type: "Root", meaning: "city; state; citizen", examples: "cosmopolitan: people from many countries, depoliticize: deprive of politics, geopolitics: study of geography and politics, megapolis: chain of cities, metropolis: chief city, metropolitan: relating to city/suburbs, police: keep order, political: relating to government, politics: art of government, polity: form of government" },
+    { term: "pon / pos", type: "Root", meaning: "Place, put", examples: "Juxtaposition, proponent, postpone, depose" },
+    { term: "port", type: "Root", meaning: "Carry, bear", examples: "Deportment, importune, portable" },
+    { term: "prob / prov", type: "Root", meaning: "Prove, test, good", examples: "Probity, reprobate, reprove, approbation" },
+    { term: "pug", type: "Root", meaning: "To fight", examples: "Pugnacious, repugnant, pugilist" },
+    { term: "purg", type: "Root", meaning: "Clean", examples: "Purge, purgatory, expurgate" },
+    { term: "rect", type: "Root", meaning: "straight", examples: "correct: accurate, direct: steer, erect: upright, erectile: capable of being raised, erector: builder, misdirected: misguided, rectify: set right, rectilinear: straight lines, rectitude: moral integrity" },
+    { term: "reg", type: "Root", meaning: "Guide, rules", examples: "Regulate, regular, regent, regime" },
+    { term: "rupt", type: "Root", meaning: "Break, burst", examples: "Disrupt, abrupt, rupture" },
+    { term: "sacr / sanct", type: "Root", meaning: "Holy, sacred", examples: "Sacrosanct, sanctimonious, sanctify" },
+    { term: "san", type: "Root", meaning: "Health", examples: "Sane, sanity, insane, sanitation" },
+    { term: "scend", type: "Root", meaning: "Climb, go", examples: "Ascend, crescendo, descent" },
+    { term: "scrib", type: "Root", meaning: "Write", examples: "Scribe, prescribe, inscribe, describe" },
+    { term: "sec / sect", type: "Root", meaning: "Cut, divide", examples: "Dissect, dichotomy, sectional, intersect" },
+    { term: "sed / sess / sid", type: "Root", meaning: "Sit, settle", examples: "Assiduous, sedentary, insidious, preside" },
+    { term: "sent / sens", type: "Root", meaning: "Feel, think", examples: "Dissent, sentiment, consensus, presentiment" },
+    { term: "sol", type: "Root", meaning: "Comfort", examples: "Consolation, solace" },
+    { term: "soph", type: "Root", meaning: "Wise", examples: "Philosophy, sophisticated, sophism" },
+    { term: "spec / spic / vid / vis / spect", type: "Root", meaning: "Look, see", examples: "Circumspect, perspicacious, auspicious, inspect, spectator, respect, perspective" },
+    { term: "tac / tic", type: "Root", meaning: "Silent", examples: "Tacit, taciturn, reticent" },
+    { term: "tang / tact / ting", type: "Root", meaning: "Touch", examples: "Tangible, contingent, tactful, intact" },
+    { term: "tax", type: "Root", meaning: "Arrangement", examples: "Syntax, taxonomy, ataxia" },
+    { term: "ten / tent / tin", type: "Root", meaning: "Hold, keep", examples: "Tenacious, retentive, pertinent, untenable" },
+    { term: "tort", type: "Root", meaning: "Twist", examples: "Contort, distort, retort" },
+    { term: "tract", type: "Root", meaning: "to draw; to pull", examples: "abstract: apart from reality, attract: pull toward, extract: draw out, intractable: stubborn, protracted: drawn out, retract: take back, subtraction: deduction, tractable: manageable, traction: friction between surfaces, tractor: vehicle that pulls" },
+    { term: "vac", type: "Root", meaning: "Empty", examples: "Vacuum, vacant, evacuate" },
+    { term: "ven / vent", type: "Root", meaning: "Come", examples: "Intervene, advent, circumvent, contravene, convene, prevent" },
+    { term: "ver", type: "Root", meaning: "Truth", examples: "Veracity, verify, verisimilitude, aver" },
+    { term: "vert / vers", type: "Root", meaning: "Turn", examples: "Adversity, subvert, avert, equivocate" },
+    { term: "viv / vit", type: "Root", meaning: "Life", examples: "Vitality, vivacious" },
+    { term: "voc / vok", type: "Root", meaning: "Call, voice", examples: "Equivocate, vociferous, evoke, provoke, vocal, advocate" },
+    { term: "vol", type: "Root", meaning: "Will, wish", examples: "Volition, malevolent, benevolent" },
+    { term: "vor / vour", type: "Root", meaning: "Eat", examples: "Devour, voracious, carnivore, herbivore" },
+    { term: "xen", type: "Root", meaning: "Foreign", examples: "Xenocide, xenophobic, xenophile" },
+
+    // --- SUFFIXES (25 items) ---
+    { term: "-able / -ible", type: "Suffix", meaning: "Capable of, worthy of, able to be", examples: "Implacable, intractable, ostensible, feasible, readable, flexible" },
+    { term: "-acious / -icious / -ous / -ose / -cious / -uous", type: "Suffix", meaning: "Full of, abounding in, inclined to", examples: "Loquacious, audacious, avaricious, verbose, voluptuous" },
+    { term: "-al / -ial", type: "Suffix", meaning: "Pertaining to, having quality of", examples: "Ephemeral, intrinsic, substantive" },
+    { term: "-ance / -ence", type: "Suffix", meaning: "Action, process, state of being, quality", examples: "abstinence: restraint, acceptance: agreement, benevolence: charity, dependence: reliance, fraudulence: deception, governance: process of government, importance: significance, magnificence: grandeur, maintenance: perpetuation, observance: act of conforming to" },
+    { term: "-ant / -ent", type: "Suffix", meaning: "Person/thing performing action or state", examples: "Suppliant, recalcitrant, dependent, transient" },
+    { term: "-ary", type: "Suffix", meaning: "Relating to, connected with", examples: "Sedentary, arbitrary, auxiliary" },
+    { term: "-ate", type: "Suffix", meaning: "To make, cause, or become", examples: "Elucidate, placate, mitigate, repudiate" },
+    { term: "-cide", type: "Suffix", meaning: "Act of killing / destroying", examples: "Pesticide, regicide, genocidal" },
+    { term: "-cracy / -crat", type: "Suffix", meaning: "Rule", examples: "Democracy, democrat, theocracy, bureaucracy" },
+    { term: "-en", type: "Suffix", meaning: "To cause to be, make", examples: "Embolden, heighten, deepen" },
+    { term: "-fer", type: "Suffix", meaning: "Carry, bring", examples: "Transfer, ferry, conifer, confer" },
+    { term: "-ful", type: "Suffix", meaning: "Full of", examples: "joyful: full of joy, hopeful: full of hope, careful: full of care" },
+    { term: "-ian", type: "Suffix", meaning: "Related to", examples: "Librarian, historian, pedestrian" },
+    { term: "-ic / -ical", type: "Suffix", meaning: "Characteristic of", examples: "Laconic, pedantic, stoic, pragmatic" },
+    { term: "-ify / -efy", type: "Suffix", meaning: "To make into, bring about", examples: "Vilify, exemplify, stupefy" },
+    { term: "-ism", type: "Suffix", meaning: "System, belief, doctrine", examples: "Altruism, hedonism, dogmatism" },
+    { term: "-ist", type: "Suffix", meaning: "One who practices or adheres to", examples: "Misanthrope, hedonist, protagonist" },
+    { term: "-ity / -ty", type: "Suffix", meaning: "Quality, state, or condition", examples: "Animosity, veracity, equanimity, paucity" },
+    { term: "-ive", type: "Suffix", meaning: "Performing or tending toward", examples: "Subversive, vindictive, pensive" },
+    { term: "-ize", type: "Suffix", meaning: "To cause to conform to, treat as", examples: "Scrutinize, galvanize, ostracize" },
+    { term: "-less", type: "Suffix", meaning: "Without, lacking", examples: "Relentless, feckless, reckless, hopeless, careless" },
+    { term: "-logy / -ology", type: "Suffix", meaning: "Study of, speech", examples: "Eulogy, tautology, biology, geology, psychology" },
+    { term: "-or / -er", type: "Suffix", meaning: "One who performs an action", examples: "Benefactor, precursor, aggressor" },
+    { term: "-osis", type: "Suffix", meaning: "condition; state; action; disease", examples: "dermatosis: skin disease, fibrosis: excess fibrous tissue, halitosis: bad breath, hypnosis: induced trance, mitosis: cell division, narcosis: stupor, osmosis: fluid diffusion, psychosis: mental disorder, scoliosis: spine curvature, toxicosis: illness from poisoning" },
+    { term: "-tion / -sion", type: "Suffix", meaning: "State, act, result", examples: "Coercion, circumvention, depredation" },
+    { term: "-ude", type: "Suffix", meaning: "State, quality, condition", examples: "Fortitude, latitude, solitude, magnitude" }
+  ];
+
+  // Application State
+  let currentMode = "flashcards";
+  let activeData = [...masterData];
+  let quizDeck = [];
+  let sessionStudied = [];
+  let fcIndex = 0;
+  let qzCompletedCount = 0;
+  let qzCurrent = null;
+  let qzScore = 0;
+  let qzStreak = 0;
+
+  function applyFilter() {
+    const val = document.getElementById("section-select").value;
+
+    if (val === "All") {
+      activeData = [...masterData];
+    } else if (val.startsWith("Prefix")) {
+      const prefixes = masterData.filter(i => i.type === "Prefix");
+      if (val === "Prefix - All") {
+        activeData = prefixes;
+      } else {
+        const pt = parseInt(val.replace("Prefix (Pt ", "").replace(")", ""), 10);
+        const chunkSize = Math.ceil(prefixes.length / 4);
+        activeData = prefixes.slice((pt - 1) * chunkSize, pt * chunkSize);
+      }
+    } else if (val.startsWith("Root")) {
+      const roots = masterData.filter(i => i.type === "Root");
+      if (val === "Root - All") {
+        activeData = roots;
+      } else {
+        const pt = parseInt(val.replace("Root (Pt ", "").replace(")", ""), 10);
+        const chunkSize = Math.ceil(roots.length / 5);
+        activeData = roots.slice((pt - 1) * chunkSize, pt * chunkSize);
+      }
+    } else if (val.startsWith("Suffix")) {
+      const suffixes = masterData.filter(i => i.type === "Suffix");
+      if (val === "Suffix - All") {
+        activeData = suffixes;
+      } else {
+        const pt = parseInt(val.replace("Suffix (Pt ", "").replace(")", ""), 10);
+        const chunkSize = Math.ceil(suffixes.length / 4);
+        activeData = suffixes.slice((pt - 1) * chunkSize, pt * chunkSize);
+      }
+    }
+
+    fcIndex = 0;
+    resetQuizDeck();
+    renderCurrentMode();
+  }
+
+  function resetQuizDeck() {
+    quizDeck = [...activeData].sort(() => Math.random() - 0.5);
+    qzCompletedCount = 0;
+  }
+
+  function restartCurrentQuiz() {
+    resetQuizDeck();
+    loadQuizQuestion();
+  }
+
+  function goHomeQuiz() {
+    document.getElementById("section-select").value = "All";
+    applyFilter();
+    switchMode('flashcards');
+  }
+
+  function switchMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll(".tab-btn").forEach(btn => btn.classList.remove("active"));
+    document.querySelectorAll(".mode-view").forEach(view => view.classList.remove("active"));
+
+    const tabBtns = document.querySelectorAll(".tab-btn");
+    if (mode === 'flashcards') tabBtns[0].classList.add("active");
+    if (mode === 'quiz') tabBtns[1].classList.add("active");
+    if (mode === 'match') tabBtns[2].classList.add("active");
+    if (mode === 'list') tabBtns[3].classList.add("active");
+
+    document.getElementById(`${mode}-view`).classList.add("active");
+    renderCurrentMode();
+  }
+
+  function renderCurrentMode() {
+    updateStatsBar();
+    if (currentMode === "flashcards") renderFlashcard();
+    else if (currentMode === "quiz") loadQuizQuestion();
+    else if (currentMode === "match") startMatchGame();
+    else if (currentMode === "list") renderStudyList();
+  }
+
+  function updateStatsBar() {
+    const statsContainer = document.getElementById("stats-container");
+    if (currentMode === "quiz") {
+      statsContainer.innerHTML = `<span class="stat-badge">🔥 ${qzStreak}</span> <span class="stat-badge">🎯 ${qzScore}</span>`;
+    } else {
+      statsContainer.innerHTML = `<span class="stat-badge">📚 ${activeData.length} Terms</span>`;
+    }
+  }
+
+  function trackSessionItem(item) {
+    if (!sessionStudied.some(i => i.term === item.term)) {
+      sessionStudied.push(item);
+    }
+    document.getElementById("session-count-text").textContent = `${sessionStudied.length} items practiced in this run`;
+  }
+
+  /* FLASHCARDS LOGIC */
+  function renderFlashcard() {
+    if (activeData.length === 0) return;
+    const card = activeData[fcIndex];
+    document.getElementById("flashcard").classList.remove("flipped");
+    document.getElementById("fc-type").textContent = card.type;
+    document.getElementById("fc-term").textContent = card.term;
+    document.getElementById("fc-meaning").textContent = card.meaning;
+    document.getElementById("fc-examples").textContent = "Examples: " + card.examples;
+    document.getElementById("fc-counter").textContent = `${fcIndex + 1} / ${activeData.length}`;
+  }
+
+  function flipCard() {
+    document.getElementById("flashcard").classList.toggle("flipped");
+  }
+
+  function nextCard() {
+    fcIndex = (fcIndex + 1) % activeData.length;
+    renderFlashcard();
+  }
+
+  function prevCard() {
+    fcIndex = (fcIndex - 1 + activeData.length) % activeData.length;
+    renderFlashcard();
+  }
+
+  function shuffleCards() {
+    activeData.sort(() => Math.random() - 0.5);
+    fcIndex = 0;
+    renderFlashcard();
+  }
+
+  /* QUIZ LOGIC WITH COMPLETION INTERFACE & FIXED COUNTER */
+  function loadNextQuestion() {
+    qzCompletedCount++;
+    loadQuizQuestion();
+  }
+
+  function loadQuizQuestion() {
+    if (activeData.length === 0) return;
+
+    // Check if user completed all questions in the active section deck
+    if (quizDeck.length === 0) {
+      document.getElementById("qz-main-content").style.display = "none";
+      document.getElementById("qz-completion-screen").style.display = "flex";
+      document.getElementById("qz-completion-stats").textContent = `Great work! You scored ${qzScore} correct with a best streak of 🔥 ${qzStreak}.`;
+      return;
+    }
+
+    // Active Question View
+    document.getElementById("qz-main-content").style.display = "block";
+    document.getElementById("qz-completion-screen").style.display = "none";
+    document.getElementById("qz-progress-counter").textContent = `${Math.min(qzCompletedCount, activeData.length)} / ${activeData.length}`;
+
+    const quizCard = document.getElementById("quiz-card");
+    quizCard.classList.remove("shake");
+    document.getElementById("qz-explanation").style.display = "none";
+    document.getElementById("qz-next-btn").style.display = "none";
+
+    const optionsGrid = document.getElementById("qz-options");
+    optionsGrid.innerHTML = "";
+
+    qzCurrent = quizDeck.shift();
+    trackSessionItem(qzCurrent);
+
+    document.getElementById("qz-type").textContent = qzCurrent.type;
+    document.getElementById("qz-term").textContent = qzCurrent.term;
+    document.getElementById("qz-examples-text").textContent = qzCurrent.examples;
+
+    const options = [qzCurrent.meaning];
+    while (options.length < 4) {
+      const rand = masterData[Math.floor(Math.random() * masterData.length)].meaning;
+      if (!options.includes(rand)) options.push(rand);
+    }
+    options.sort(() => Math.random() - 0.5);
+
+    options.forEach(optText => {
+      const btn = document.createElement("button");
+      btn.className = "option-btn";
+      btn.textContent = optText;
+      btn.onclick = () => handleQuizAnswer(btn, optText);
+      optionsGrid.appendChild(btn);
+    });
+  }
+
+  function handleQuizAnswer(selectedBtn, selectedText) {
+    const allBtns = document.querySelectorAll("#qz-options .option-btn");
+    allBtns.forEach(b => b.disabled = true);
+
+    const isCorrect = selectedText === qzCurrent.meaning;
+
+    if (isCorrect) {
+      selectedBtn.classList.add("correct-choice");
+      selectedBtn.innerHTML += " <span>✓</span>";
+      qzScore++;
+      qzStreak++;
+    } else {
+      document.getElementById("quiz-card").classList.add("shake");
+      selectedBtn.classList.add("wrong-choice");
+      selectedBtn.innerHTML += " <span>✗</span>";
+      qzStreak = 0;
+
+      // Smart Re-queuing: Insert missed item 2 to 5 positions ahead randomly
+      const offset = Math.floor(Math.random() * 4) + 2; 
+      const insertIndex = Math.min(quizDeck.length, offset);
+      quizDeck.splice(insertIndex, 0, qzCurrent);
+
+      allBtns.forEach(btn => {
+        if (btn.textContent === qzCurrent.meaning) {
+          btn.classList.add("correct-choice");
+          btn.innerHTML += " <span>✓</span>";
+        }
+      });
+    }
+
+    updateStatsBar();
+    document.getElementById("qz-explanation").style.display = "block";
+    document.getElementById("qz-next-btn").style.display = "block";
+  }
+
+  function practiceSessionFlashcards() {
+    if (sessionStudied.length === 0) {
+      alert("Practice a few questions in the quiz first to build your session deck!");
+      return;
+    }
+    activeData = [...sessionStudied];
+    fcIndex = 0;
+    switchMode('flashcards');
+  }
+
+  let matchSelectedTile = null;
+
+  function startMatchGame() {
+    matchSelectedTile = null;
+    const grid = document.getElementById("match-grid");
+    grid.innerHTML = "";
+
+    const sample = [...activeData].sort(() => Math.random() - 0.5).slice(0, 4);
+    const tiles = [];
+
+    sample.forEach((item, idx) => {
+      trackSessionItem(item);
+      tiles.push({ id: idx, text: item.term, type: "term" });
+      tiles.push({ id: idx, text: item.meaning, type: "meaning" });
+    });
+
+    tiles.sort(() => Math.random() - 0.5);
+
+    tiles.forEach(tile => {
+      const div = document.createElement("div");
+      div.className = "match-tile";
+      div.textContent = tile.text;
+      div.onclick = () => handleMatchClick(div, tile);
+      grid.appendChild(div);
+    });
+  }
+
+  function handleMatchClick(element, tile) {
+    if (element.classList.contains("matched") || element === matchSelectedTile?.element) return;
+
+    if (!matchSelectedTile) {
+      matchSelectedTile = { element, tile };
+      element.classList.add("selected");
+    } else {
+      if (matchSelectedTile.tile.id === tile.id && matchSelectedTile.tile.type !== tile.type) {
+        element.classList.add("matched");
+        matchSelectedTile.element.classList.add("matched");
+        matchSelectedTile = null;
+      } else {
+        element.classList.add("incorrect");
+        matchSelectedTile.element.classList.add("incorrect");
+        
+        setTimeout(() => {
+          element.classList.remove("incorrect", "selected");
+          matchSelectedTile.element.classList.remove("incorrect", "selected");
+          matchSelectedTile = null;
+        }, 500);
+      }
+    }
+  }
+
+  /* STUDY LIST LOGIC */
+  function renderStudyList() {
+    const listContainer = document.getElementById("study-list");
+    const query = document.getElementById("search-input").value.toLowerCase();
+    listContainer.innerHTML = "";
+
+    const filtered = activeData.filter(i => 
+      i.term.toLowerCase().includes(query) || 
+      i.meaning.toLowerCase().includes(query) || 
+      i.examples.toLowerCase().includes(query)
+    );
+
+    filtered.forEach(item => {
+      const div = document.className = "list-item";
+      const divElement = document.createElement("div");
+      divElement.className = "list-item";
+      divElement.innerHTML = `
+        <div class="list-item-header">
+          <span class="list-term">${item.term}</span>
+          <span class="type-badge">${item.type}</span>
+        </div>
+        <div class="list-meaning">${item.meaning}</div>
+        <div class="list-examples">Examples: ${item.examples}</div>
+      `;
+      listContainer.appendChild(divElement);
+    });
+  }
+
+  // Keyboard Navigation for Flashcards
+  document.addEventListener("keydown", (e) => {
+    if (currentMode !== "flashcards") return;
+    if (e.code === "Space") { e.preventDefault(); flipCard(); }
+    if (e.code === "ArrowRight") nextCard();
+    if (e.code === "ArrowLeft") prevCard();
+  });
+  applyFilter();
+</script>
+
+</body>
+</html>
